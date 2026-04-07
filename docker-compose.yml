@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: panyaoxingqiu-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: panyao123456
+      MYSQL_DATABASE: panyaoxingqiu
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./后端/panyaoxingqiu-server/migrations:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - panyao-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: panyaoxingqiu-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+    networks:
+      - panyao-network
+
+  # 后端服务
+  backend:
+    build:
+      context: ./后端/panyaoxingqiu-server
+      dockerfile: Dockerfile
+    container_name: panyaoxingqiu-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: panyao123456
+      DB_DATABASE: panyaoxingqiu
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      JWT_SECRET: panyaoxingqiu-jwt-secret-key-for-dev
+      JWT_EXPIRES_IN: 7d
+      WECHAT_APPID: ""
+      WECHAT_SECRET: ""
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./后端/panyaoxingqiu-server:/app
+      - /app/node_modules
+    command: npm run start:dev
+    networks:
+      - panyao-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  panyao-network:
+    driver: bridge

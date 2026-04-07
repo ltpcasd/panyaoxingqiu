@@ -1,0 +1,118 @@
+sequenceDiagram
+    autonumber
+    participant A as 用户A
+    participant B as 用户B
+    participant Client as 小程序客户端
+    participant Server as 服务端
+    participant DB as 数据库
+    participant WX as 微信服务器
+
+    %% 用户A注册流程
+    rect rgb(230, 245, 255)
+        Note over A,WX: 用户A注册流程
+        A->>Client: 打开小程序
+        Client->>WX: wx.login() 获取code
+        WX-->>Client: 返回临时code
+        Client->>Server: 发送code换取OpenID/UnionID
+        Server->>WX: 验证code
+        WX-->>Server: 返回用户身份信息
+        Server->>DB: 查询用户是否存在
+        DB-->>Server: 返回查询结果
+        
+        alt 新用户
+            Server->>DB: 创建用户记录
+            DB-->>Server: 返回用户ID
+        end
+        
+        Server-->>Client: 返回登录态Token
+        Client-->>A: 进入首页
+    end
+
+    %% 用户A创建配对
+    rect rgb(255, 240, 230)
+        Note over A,DB: 用户A创建配对
+        A->>Client: 点击"创建情侣空间"
+        Client->>Server: POST /api/relationship/create
+        Server->>DB: 检查用户是否已有活跃关系
+        DB-->>Server: 无活跃关系
+        
+        Server->>Server: 生成邀请码(XXXX-XXXX-XXXX)
+        Server->>Server: 生成关系ID
+        Server->>Server: 生成共享加密密钥
+        
+        Server->>DB: 创建待配对关系记录
+        Note right of DB: status: pending<br/>invite_code: XXXX-XXXX-XXXX<br/>invite_expires: +24h
+        DB-->>Server: 创建成功
+        
+        Server-->>Client: 返回邀请码和二维码
+        Client-->>A: 显示邀请码和分享选项
+    end
+
+    %% 用户B注册流程
+    rect rgb(230, 255, 230)
+        Note over B,WX: 用户B注册流程
+        B->>Client: 通过邀请链接/扫码进入
+        Client->>WX: wx.login() 获取code
+        WX-->>Client: 返回临时code
+        Client->>Server: 发送code+邀请码
+        Server->>WX: 验证code
+        WX-->>Server: 返回用户身份信息
+        Server->>DB: 查询/创建用户B
+        DB-->>Server: 返回用户B信息
+    end
+
+    %% 用户B验证邀请码
+    rect rgb(255, 255, 230)
+        Note over B,DB: 验证邀请码
+        B->>Client: 输入邀请码
+        Client->>Server: POST /api/relationship/join
+        Note right of Server: 参数: invite_code, user_b_id
+        
+        Server->>DB: 查询邀请码有效性
+        DB-->>Server: 返回关系记录
+        
+        Server->>Server: 验证邀请码未过期
+        Server->>DB: 检查用户B是否已有活跃关系
+        DB-->>Server: 无活跃关系
+        
+        alt 验证通过
+            Server->>DB: 更新关系状态为active
+            Note right of DB: status: active<br/>user_b_id: 用户B_ID<br/>paired_at: now
+            DB-->>Server: 更新成功
+            
+            Server->>DB: 创建共享数据空间
+            Server->>Server: 生成端到端加密密钥对
+            
+            Server-->>Client: 返回配对成功
+            Client-->>B: 显示"配对成功"页面
+        else 验证失败
+            Server-->>Client: 返回错误信息
+            Client-->>B: 提示"邀请码无效或已过期"
+        end
+    end
+
+    %% 配对成功通知
+    rect rgb(255, 230, 255)
+        Note over A,B: 配对成功通知
+        Server->>Client: WebSocket推送: 配对成功
+        Client-->>A: 显示"对方已接受邀请"
+        
+        Server->>Client: WebSocket推送: 欢迎消息
+        Client-->>B: 显示"欢迎来到心动星球"
+        
+        Note over A,B: 双方进入情侣空间
+    end
+
+    %% 后续访问验证
+    rect rgb(240, 240, 240)
+        Note over A,DB: 日常访问验证
+        A->>Client: 打开小程序
+        Client->>Server: 携带Token请求数据
+        Server->>Server: 验证Token有效性
+        Server->>DB: 查询用户关系状态
+        DB-->>Server: 返回active关系
+        Server->>Server: 验证用户权限
+        Server-->>Client: 返回加密数据
+        Client->>Client: 使用共享密钥解密
+        Client-->>A: 显示情侣空间内容
+    end

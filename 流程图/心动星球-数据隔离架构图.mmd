@@ -1,0 +1,131 @@
+graph TB
+    subgraph 用户层["👤 用户层 User Layer"]
+        A[用户A<br/>User_A]
+        B[用户B<br/>User_B]
+        C[其他用户<br/>User_C]
+    end
+
+    subgraph 认证层["🔐 认证层 Auth Layer"]
+        AUTH[身份认证服务<br/>Authentication Service]
+        PERM[权限验证服务<br/>Permission Service]
+    end
+
+    subgraph 关系层["💕 关系层 Relationship Layer"]
+        REL[情侣关系管理<br/>Couple Relationship]
+        REL_DATA[(关系数据<br/>relationships)]
+    end
+
+    subgraph 数据层["💾 数据层 Data Layer"]
+        subgraph 用户A私有数据["🔒 用户A私有数据"]
+            A1[(个人日记<br/>personal_diary_A)]
+            A2[(私密相册<br/>private_album_A)]
+            A3[(心情记录<br/>mood_A)]
+            A4[(个人设置<br/>settings_A)]
+        end
+
+        subgraph 用户B私有数据["🔒 用户B私有数据"]
+            B1[(个人日记<br/>personal_diary_B)]
+            B2[(私密相册<br/>private_album_B)]
+            B3[(心情记录<br/>mood_B)]
+            B4[(个人设置<br/>settings_B)]
+        end
+
+        subgraph 共享数据["🔓 共享数据 Shared Data"]
+            S1[(聊天记录<br/>chat_messages)]
+            S2[(共享相册<br/>shared_album)]
+            S3[(纪念日<br/>anniversaries)]
+            S4[(情侣任务<br/>couple_tasks)]
+            S5[(恋爱时间线<br/>love_timeline)]
+        end
+
+        subgraph 加密服务["🔑 加密服务 Encryption"]
+            E2E[端到端加密<br/>E2EE Service]
+            KMS[密钥管理服务<br/>KMS]
+        end
+    end
+
+    subgraph 安全层["🛡️ 安全层 Security Layer"]
+        WAF[Web应用防火墙<br/>WAF]
+        RATE[限流服务<br/>Rate Limiter]
+        AUDIT[审计日志<br/>Audit Log]
+    end
+
+    %% 用户访问流程
+    A -->|微信登录| AUTH
+    B -->|微信登录| AUTH
+    C -->|微信登录| AUTH
+
+    AUTH -->|验证通过| PERM
+    
+    PERM -->|查询关系| REL
+    REL --> REL_DATA
+
+    %% 用户A访问路径
+    A -.->|访问私有数据| A1
+    A -.->|访问私有数据| A2
+    A -.->|访问私有数据| A3
+    A -.->|访问私有数据| A4
+    
+    A ==>|访问共享数据| S1
+    A ==>|访问共享数据| S2
+    A ==>|访问共享数据| S3
+    A ==>|访问共享数据| S4
+    A ==>|访问共享数据| S5
+
+    %% 用户B访问路径
+    B -.->|访问私有数据| B1
+    B -.->|访问私有数据| B2
+    B -.->|访问私有数据| B3
+    B -.->|访问私有数据| B4
+    
+    B ==>|访问共享数据| S1
+    B ==>|访问共享数据| S2
+    B ==>|访问共享数据| S3
+    B ==>|访问共享数据| S4
+    B ==>|访问共享数据| S5
+
+    %% 其他用户（无权限）
+    C -.->|无关系| X[拒绝访问<br/>403 Forbidden]
+
+    %% 加密流程
+    S1 -.->|加密/解密| E2E
+    E2E -.->|密钥管理| KMS
+
+    %% 安全保护
+    WAF --> AUTH
+    RATE --> AUTH
+    AUDIT --> REL_DATA
+    AUDIT --> A1
+    AUDIT --> B1
+    AUDIT --> S1
+
+    %% 样式定义
+    classDef userStyle fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef authStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef relStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef privateStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef sharedStyle fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    classDef encryptStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef securityStyle fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef blockedStyle fill:#fafafa,stroke:#616161,stroke-width:2px
+
+    class A,B,C userStyle
+    class AUTH,PERM authStyle
+    class REL,REL_DATA relStyle
+    class A1,A2,A3,A4,B1,B2,B3,B4 privateStyle
+    class S1,S2,S3,S4,S5 sharedStyle
+    class E2E,KMS encryptStyle
+    class WAF,RATE,AUDIT securityStyle
+    class X blockedStyle
+
+    %% 图例
+    subgraph 图例["📋 图例 Legend"]
+        direction LR
+        L1[用户]:::userStyle
+        L2[认证]:::authStyle
+        L3[关系]:::relStyle
+        L4[私有数据]:::privateStyle
+        L5[共享数据]:::sharedStyle
+        L6[加密]:::encryptStyle
+        L7[安全]:::securityStyle
+    end
