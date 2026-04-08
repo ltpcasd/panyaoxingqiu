@@ -37,10 +37,10 @@ export class QuizRecord {
   @Column({ name: 'is_match', type: 'tinyint', default: 0, comment: '是否匹配' })
   isMatch: number;
 
-  @Column({ name: 'answered_at_1', type: 'timestamp', nullable: true })
+  @Column({ name: 'answered_at_1', type: 'datetime', nullable: true })
   answeredAt1: Date | null;
 
-  @Column({ name: 'answered_at_2', type: 'timestamp', nullable: true })
+  @Column({ name: 'answered_at_2', type: 'datetime', nullable: true })
   answeredAt2: Date | null;
 
   @CreateDateColumn({ name: 'created_at' })

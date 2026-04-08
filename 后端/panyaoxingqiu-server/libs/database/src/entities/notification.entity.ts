@@ -31,7 +31,7 @@ export class Notification {
   @Column({ name: 'is_read', type: 'tinyint', default: 0 })
   isRead: number;
 
-  @Column({ name: 'read_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'read_at', type: 'datetime', nullable: true })
   readAt: Date | null;
 
   @CreateDateColumn({ name: 'created_at' })

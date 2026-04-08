@@ -34,7 +34,7 @@ export class UserTask {
   @Column({ name: 'task_date', type: 'date', nullable: true, comment: '任务日期' })
   taskDate: string | null;
 
-  @Column({ name: 'completed_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'completed_at', type: 'datetime', nullable: true })
   completedAt: Date | null;
 
   @Column({ type: 'varchar', length: 256, nullable: true, comment: '完成备注' })
@@ -46,7 +46,7 @@ export class UserTask {
   @Column({ name: 'reward_claimed', type: 'tinyint', default: 0, comment: '奖励是否已领取 0-未领取 1-已领取' })
   rewardClaimed: boolean;
 
-  @Column({ name: 'reward_claimed_at', type: 'timestamp', nullable: true, comment: '奖励领取时间' })
+  @Column({ name: 'reward_claimed_at', type: 'datetime', nullable: true, comment: '奖励领取时间' })
   rewardClaimedAt: Date | null;
 
   @CreateDateColumn({ name: 'created_at' })
