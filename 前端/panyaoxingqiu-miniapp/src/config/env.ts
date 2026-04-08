@@ -10,7 +10,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 // API 基础地址配置
 const API_URLS = {
   development: 'http://localhost:3000/api/v1',
-  production: 'https://panyaoxingqiu.railway.app/api/v1'
+  production: 'https://panyaoxingqiu-production.up.railway.app/api/v1'
 }
 
 // 导出当前环境的API地址
