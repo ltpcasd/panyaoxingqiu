@@ -1,0 +1,107 @@
+# 阿里云OSS静态网站托管配置
+# 潘瑶星球uni-app H5前端部署配置
+# 适用于Serverless Devs工具部署
+
+edition: 3.0.0
+name: panyaoxingqiu-frontend
+access: default
+
+vars: # 全局变量
+  region: cn-hangzhou
+  bucketName: panyaoxingqiu-web  # 请替换为全局唯一的Bucket名称
+  
+services:
+  # OSS Bucket配置
+  oss:
+    component: oss
+    props:
+      bucket: ${vars.bucketName}
+      region: ${vars.region}
+      acl: public-read  # 公开读权限
+      # 网站托管配置
+      website:
+        index: index.html
+        error: index.html  # SPA应用，所有路由都指向index.html
+        # 支持子目录默认页
+        subDir:
+          type: index
+      # CORS配置 - 允许后端API访问
+      cors:
+        - allowedOrigin:
+            - "*"  # 生产环境建议替换为具体域名
+          allowedMethod:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - HEAD
+            - OPTIONS
+          allowedHeader:
+            - "*"
+          exposeHeader:
+            - ETag
+            - x-oss-request-id
+          maxAgeSeconds: 3600
+      # 防盗链配置（可选）
+      # referer:
+      #   allowEmpty: true
+      #   referers:
+      #     - https://panyaoxingqiu.com
+      #     - https://www.panyaoxingqiu.com
+      # 生命周期规则（可选）
+      # lifecycle:
+      #   - name: delete-old-logs
+      #     prefix: logs/
+      #     status: Enabled
+      #     expiration:
+      #       days: 30
+
+  # CDN加速配置（可选但推荐）
+  cdn:
+    component: cdn
+    props:
+      domainName: www.panyaoxingqiu.com  # 请替换为你的域名
+      sources:
+        - type: oss
+          content: ${vars.bucketName}.oss-${vars.region}.aliyuncs.com
+          port: 80
+          priority: 20
+          weight: 10
+      # HTTPS配置
+      httpsConfig:
+        certId: your-cert-id  # 需要先在阿里云SSL证书服务申请
+        certType: cas
+        http2: on
+      # 缓存配置
+      cacheConfigs:
+        - cacheType: path
+          cacheContent: /
+          ttl: 3600  # 静态资源缓存1小时
+        - cacheType: path
+          cacheContent: /static/*
+          ttl: 86400  # 静态资源缓存1天
+        - cacheType: path
+          cacheContent: /index.html
+          ttl: 0  # HTML不缓存，确保更新及时生效
+      # 回源配置
+      referConfig:
+        referType: block
+        referList:
+          - evil-site.com
+        allowEmpty: true
+      # 压缩配置
+      compressConfig:
+        enable: true
+        gzip: on
+        brotli: on
+
+  # 域名解析配置（可选，需要域名在阿里云）
+  # domain:
+  #   component: domain
+  #   props:
+  #     domainName: panyaoxingqiu.com
+  #     records:
+  #       - type: CNAME
+  #         host: www
+  #         value: www.panyaoxingqiu.com.w.kunlunar.com  # CDN提供的CNAME
+  #         ttl: 600

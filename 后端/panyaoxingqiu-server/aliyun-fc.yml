@@ -1,0 +1,92 @@
+# 阿里云函数计算FC部署配置
+# 潘瑶星球后端服务
+# 适用于Serverless Devs工具部署
+
+edition: 3.0.0
+name: panyaoxingqiu-server
+access: default
+
+vars: # 全局变量
+  region: cn-hangzhou
+  serviceName: panyaoxingqiu-server
+  functionName: api-server
+  
+services:
+  panyaoxingqiu-server:
+    component: fc3
+    props:
+      region: ${vars.region}
+      service:
+        name: ${vars.serviceName}
+        description: 潘瑶星球后端服务
+        # 日志配置（可选，建议开启）
+        logConfig:
+          project: panyaoxingqiu-log
+          logstore: server-logs
+          enableRequestMetrics: true
+          enableInstanceMetrics: true
+        # VPC配置（如需连接RDS等）
+        # vpcConfig:
+        #   vpcId: vpc-xxx
+        #   securityGroupId: sg-xxx
+        #   vswitchIds:
+        #     - vsw-xxx
+      function:
+        name: ${vars.functionName}
+        description: NestJS API服务
+        runtime: custom.debian10  # 使用自定义运行时，支持更多Node.js特性
+        handler: index.handler
+        memorySize: 512  # 内存配置，单位MB，可根据需要调整
+        timeout: 60      # 超时时间，单位秒
+        cpu: 0.5         # CPU配置
+        diskSize: 512    # 磁盘大小，单位MB
+        environmentVariables:
+          NODE_ENV: production
+          PORT: 9000
+          # 数据库配置 - 使用NAS挂载的SQLite
+          DATABASE_PATH: /mnt/data/database.sqlite
+          # JWT密钥（请替换为随机字符串）
+          JWT_SECRET: your-jwt-secret-key-here
+          # 其他环境变量
+          API_PREFIX: /api/v1
+        # 代码位置
+        code: ./dist
+        # 自定义运行时启动命令
+        customRuntimeConfig:
+          command:
+            - node
+            - server.js
+      triggers:
+        - name: http-trigger
+          type: http
+          config:
+            authType: anonymous  # 允许匿名访问，由应用层处理认证
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+      # 自定义域名配置（部署后配置）
+      # customDomains:
+      #   - domainName: api.panyaoxingqiu.com
+      #     protocol: HTTP
+      #     routeConfig:
+      #       routes:
+      #         - path: /*
+      #           functionName: ${vars.functionName}
+
+  # NAS文件系统配置（用于SQLite持久化存储）
+  nas:
+    component: nas
+    props:
+      region: ${vars.region}
+      vpcId: vpc-xxx  # 需要替换为实际的VPC ID
+      vSwitchId: vsw-xxx  # 需要替换为实际的交换机ID
+      storageType: Performance  # 性能型NAS
+      groupId: 1000
+      userId: 1000
+      mountPoints:
+        - mountDir: /mnt/data
+          serverAddr: xxx.cn-hangzhou.nas.aliyuncs.com:/  # 需要替换为实际的NAS地址

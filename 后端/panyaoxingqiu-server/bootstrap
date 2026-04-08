@@ -1,0 +1,15 @@
+#!/bin/bash
+# 阿里云函数计算自定义运行时启动脚本
+# 用于启动NestJS应用
+
+echo "Starting Panyaoxingqiu Server..."
+
+# 设置Node.js环境
+export NODE_ENV=production
+export PORT=9000
+
+# 创建数据目录（如果不存在）
+mkdir -p /mnt/data
+
+# 启动应用
+exec node server.js
