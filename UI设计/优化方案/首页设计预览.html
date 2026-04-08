@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>潘瑶星球 - 首页设计预览（优化版）</title>
+  <style>
+    /* ==================== CSS 变量 ==================== */
+    :root {
+      /* 主色调 - 温暖珊瑚粉 */
+      --primary: #FF7B7B;
+      --primary-light: #FFA8A8;
+      --primary-dark: #E86565;
+      
+      /* 温暖辅助色 */
+      --warm-coral: #FF6B6B;
+      --warm-peach: #FFB7B2;
+      --warm-cream: #FFF0E5;
+      --warm-rose: #FFD1D1;
+      --warm-gold: #FFB347;
+      
+      /* 背景色 */
+      --bg-cream: #FFF8F5;
+      --bg-white: #FFFFFF;
+      
+      /* 文字色 */
+      --text-primary: #2D3436;
+      --text-secondary: #636E72;
+      --text-muted: #B2BEC3;
+      --text-white: #FFFFFF;
+      
+      /* 字号 - 优化后 */
+      --font-xs: 14px;
+      --font-sm: 14px;
+      --font-base: 16px;
+      --font-md: 17px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+      --font-3xl: 28px;
+      --font-4xl: 32px;
+      --font-5xl: 40px;
+      
+      /* 圆角 - 更圆润 */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-2xl: 24px;
+      
+      /* 阴影 - 温暖 */
+      --shadow-sm: 0 2px 8px rgba(255, 123, 123, 0.06);
+      --shadow-md: 0 4px 16px rgba(255, 123, 123, 0.1);
+      --shadow-lg: 0 8px 24px rgba(255, 123, 123, 0.15);
+      --shadow-warm: 0 4px 20px rgba(255, 123, 123, 0.3);
+    }
+    
+    /* ==================== 基础样式 ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', sans-serif;
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFF0E5 100%);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+    }
+    
+    /* ==================== 页面容器 ==================== */
+    .phone-frame {
+      width: 375px;
+      min-height: 812px;
+      margin: 40px auto;
+      background: var(--bg-cream);
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 12px #1a1a1a;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* 状态栏 */
+    .status-bar {
+      height: 44px;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    /* 主内容 */
+    .content {
+      height: calc(100% - 44px - 83px);
+      overflow-y: auto;
+      padding: 24px;
+    }
+    
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* ==================== 头部区域 ==================== */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    
+    .avatar-section {
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .couple-avatars {
+      display: flex;
+      align-items: center;
+    }
+    
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .avatar-me {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--warm-peach) 100%);
+      z-index: 2;
+    }
+    
+    .avatar-partner {
+      background: linear-gradient(135deg, var(--warm-coral) 0%, var(--warm-rose) 100%);
+      margin-left: -18px;
+    }
+    
+    .avatar-edit-hint {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 26px;
+      height: 26px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .avatar-section:hover .avatar-edit-hint {
+      opacity: 1;
+    }
+    
+    .edit-icon {
+      font-size: 12px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .couple-name {
+      display: block;
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    
+    .days-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(90deg, rgba(255, 123, 123, 0.12) 0%, rgba(255, 183, 178, 0.12) 100%);
+      padding: 8px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 123, 123, 0.1);
+    }
+    
+    .days-text {
+      font-size: var(--font-sm);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .days-number {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    /* ==================== 功能卡片网格 ==================== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-md), 0 0 0 1px rgba(255, 123, 123, 0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 123, 123, 0.1);
+    }
+    
+    .feature-card:active {
+      transform: scale(0.98);
+    }
+    
+    .feature-card.featured {
+      grid-column: span 2;
+      flex-direction: row;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FF9A8B 50%, #FFB7B2 100%);
+      color: white;
+      padding: 28px 24px;
+      box-shadow: var(--shadow-warm), 0 0 0 1px rgba(255, 123, 123, 0.2);
+    }
+    
+    /* 图标容器 - 现代风格 */
+    .icon-wrapper {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    
+    .icon-gradient {
+      background: linear-gradient(135deg, rgba(255, 123, 123, 0.12) 0%, rgba(255, 183, 178, 0.12) 100%);
+    }
+    
+    .feature-card.featured .icon-wrapper {
+      background: rgba(255, 255, 255, 0.2);
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+    }
+    
+    .icon-svg {
+      width: 28px;
+      height: 28px;
+    }
+    
+    .feature-card.featured .icon-svg {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .card-content {
+      flex: 1;
+    }
+    
+    .card-title {
+      display: block;
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+    
+    .feature-card.featured .card-title {
+      color: white;
+      font-size: var(--font-xl);
+    }
+    
+    .card-desc {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+    
+    .feature-card.featured .card-desc {
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* ==================== 今日任务 ==================== */
+    .section {
+      margin-bottom: 24px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .section-more {
+      font-size: var(--font-sm);
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .task-item {
+      background: white;
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm), 0 0 0 1px rgba(255, 123, 123, 0.04);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .task-item:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .task-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--warm-peach) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .task-info {
+      flex: 1;
+    }
+    
+    .task-name {
+      display: block;
+      font-size: var(--font-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    
+    .task-reward {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+    
+    .task-status {
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: transparent;
+      transition: all 0.2s;
+    }
+    
+    .task-status.completed {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--warm-peach) 100%);
+      border-color: transparent;
+      color: white;
+    }
+    
+    /* ==================== 底部导航 ==================== */
+    .tabbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 83px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 123, 123, 0.08);
+    }
+    
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    
+    .tab-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    
+    .tab-item.active .tab-icon {
+      color: var(--primary);
+    }
+    
+    .tab-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    
+    .tab-item.active .tab-text {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    /* ==================== 现代图标 SVG ==================== */
+    .icon-clock {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .icon-camera {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .icon-heart {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    /* ==================== 标题标签 ==================== */
+    .page-title {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+    }
+    
+    .optimize-badge {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FFB7B2 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <span class="page-title">📱 首页设计预览</span>
+    <span class="optimize-badge">✨ 优化版</span>
+    
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>📶 🔋</span>
+    </div>
+    
+    <!-- 主内容 -->
+    <div class="content">
+      <!-- 头部区域 -->
+      <div class="header">
+        <div class="avatar-section">
+          <div class="couple-avatars">
+            <div class="avatar avatar-me"></div>
+            <div class="avatar avatar-partner"></div>
+          </div>
+          <div class="avatar-edit-hint">
+            <span class="edit-icon">✎</span>
+          </div>
+        </div>
+        <div class="user-info">
+          <span class="couple-name">小瑶 & 阿潘</span>
+          <div class="days-badge">
+            <span class="days-text">在潘瑶星球</span>
+            <span class="days-number">365</span>
+            <span class="days-text">天</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 功能卡片网格 -->
+      <div class="feature-grid">
+        <!-- 时光轴 - 大图 -->
+        <div class="feature-card featured">
+          <div class="icon-wrapper">
+            <!-- 现代时钟图标 -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12,6 12,12 16,14"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <span class="card-title">时光轴</span>
+            <span class="card-desc">记录我们的点点滴滴</span>
+          </div>
+        </div>
+        
+        <!-- 记忆星云 -->
+        <div class="feature-card">
+          <div class="icon-wrapper icon-gradient">
+            <!-- 现代相机图标 -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#FF7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+          <span class="card-title">记忆星云</span>
+          <span class="card-desc">128 张照片</span>
+        </div>
+        
+        <!-- 默契考验 -->
+        <div class="feature-card">
+          <div class="icon-wrapper icon-gradient">
+            <!-- 现代心形骰子图标 -->
+            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#FF7B7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <span class="card-title">默契考验</span>
+          <span class="card-desc">默契度 85%</span>
+        </div>
+      </div>
+      
+      <!-- 今日任务预览 -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">今日任务</span>
+          <span class="section-more">查看更多 →</span>
+        </div>
+        <div class="task-list">
+          <div class="task-item">
+            <div class="task-icon">💝</div>
+            <div class="task-info">
+              <span class="task-name">发送早安问候</span>
+              <span class="task-reward">+10 爱心值</span>
+            </div>
+            <div class="task-status completed">✓</div>
+          </div>
+          <div class="task-item">
+            <div class="task-icon">📸</div>
+            <div class="task-info">
+              <span class="task-name">上传一张合照</span>
+              <span class="task-reward">+20 爱心值</span>
+            </div>
+            <div class="task-status"></div>
+          </div>
+          <div class="task-item">
+            <div class="task-icon">✨</div>
+            <div class="task-info">
+              <span class="task-name">完成默契答题</span>
+              <span class="task-reward">+30 爱心值</span>
+            </div>
+            <div class="task-status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="tabbar">
+      <div class="tab-item active">
+        <div class="tab-icon">🏠</div>
+        <span class="tab-text">首页</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">📅</div>
+        <span class="tab-text">时光轴</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">📋</div>
+        <span class="tab-text">任务</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">💌</div>
+        <span class="tab-text">信箱</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon">👤</div>
+        <span class="tab-text">我的</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
  */
 
 // 导入环境配置
-export { API_BASE_URL, WX_APP_ID, IS_PRODUCTION } from './env'
+export { API_BASE_URL, IS_PRODUCTION } from './env'
 
 export const API_VERSION = 'v1'
 
@@ -17,9 +17,8 @@ export const UPLOAD_CONFIG = {
   accept: ['jpg', 'jpeg', 'png', 'gif', 'webp']
 }
 
-// 小程序配置
+// 应用配置
 export const APP_CONFIG = {
-  appId: 'your_wechat_appid', // 替换为实际微信小程序AppID
   appName: '潘瑶星球',
   version: '2.0.0'
 }

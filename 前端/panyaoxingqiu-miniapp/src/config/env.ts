@@ -18,10 +18,5 @@ export const API_BASE_URL = isProduction
   ? API_URLS.production 
   : API_URLS.development
 
-// 小程序配置
-export const WX_APP_ID = isProduction 
-  ? 'your_wechat_appid'  // 替换为正式AppID
-  : 'touristappid'       // 开发环境使用游客模式
-
 // 环境标识
 export const IS_PRODUCTION = isProduction

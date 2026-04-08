@@ -22,7 +22,7 @@
             />
           </view>
           <view class="avatar-edit-hint">
-            <text class="edit-icon">✏️</text>
+            <text class="edit-icon">✎</text>
           </view>
         </view>
         
@@ -44,7 +44,7 @@
         <!-- 时光轴 - 大图 -->
         <view class="feature-card featured" @click="navigateTo('/pages/timeline/timeline')">
           <view class="card-icon-large">
-            <text class="icon">📅</text>
+            <GiIcon name="timeline" :size="32" color="#fff" />
           </view>
           <view class="card-content">
             <text class="card-title">时光轴</text>
@@ -54,14 +54,18 @@
         
         <!-- 记忆星云 -->
         <view class="feature-card" @click="navigateTo('/pages/album/album')">
-          <text class="card-icon">📷</text>
+          <view class="card-icon-wrapper">
+            <GiIcon name="camera" :size="24" />
+          </view>
           <text class="card-title">记忆星云</text>
           <text class="card-desc">{{ albumStore.totalPhotos }} 张照片</text>
         </view>
         
         <!-- 默契考验 -->
         <view class="feature-card" @click="navigateTo('/pages/compatibility/compatibility')">
-          <text class="card-icon">🎯</text>
+          <view class="card-icon-wrapper">
+            <GiIcon name="heart" :size="24" />
+          </view>
           <text class="card-title">默契考验</text>
           <text class="card-desc">默契度 85%</text>
         </view>
@@ -79,16 +83,18 @@
             :key="task.id"
             class="task-item"
           >
-            <view class="task-icon">{{ task.task?.icon || '📋' }}</view>
+            <view class="task-icon" :class="getTaskIconClass(task.task?.taskType)">
+              <GiIcon :name="getTaskIconName(task.task?.taskType)" :size="22" color="#fff" />
+            </view>
             <view class="task-info">
               <text class="task-name">{{ task.task?.title || '任务' }}</text>
-              <text class="task-reward">+{{ task.task?.rewardPoints || 0 }} 分</text>
+              <text class="task-reward">+{{ task.task?.rewardPoints || 0 }} 爱心值</text>
             </view>
             <view 
               class="task-status"
               :class="{ completed: task.status === 1 || task.status === 2 }"
             >
-              <text v-if="task.status === 1 || task.status === 2">✓</text>
+              <GiIcon v-if="task.status === 1 || task.status === 2" name="check" :size="14" color="#fff" />
             </view>
           </view>
           <!-- 空状态 -->
@@ -112,6 +118,7 @@ import { useUserStore } from '@/stores/user'
 import { useAlbumStore } from '@/stores/album'
 import { useTaskStore } from '@/stores/task'
 import type { UserTask } from '@/types'
+import GiIcon from '@/components/GiIcon.vue'
 
 const userStore = useUserStore()
 const albumStore = useAlbumStore()
@@ -189,6 +196,32 @@ const navigateTo = (url: string) => {
       uni.navigateTo({ url })
     }
   }
+}
+
+/**
+ * 获取任务图标名称
+ */
+const getTaskIconName = (taskType?: number) => {
+  const iconMap: Record<number, string> = {
+    1: 'sun',    // 日常任务
+    2: 'camera', // 拍照任务
+    3: 'help',   // 答题任务
+    4: 'mailbox' // 写信任务
+  }
+  return iconMap[taskType || 0] || 'heart'
+}
+
+/**
+ * 获取任务图标样式类
+ */
+const getTaskIconClass = (taskType?: number) => {
+  const classMap: Record<number, string> = {
+    1: 'icon-gold',     // 日常任务
+    2: 'icon-coral',    // 拍照任务
+    3: 'icon-mint',     // 答题任务
+    4: 'icon-lavender'  // 写信任务
+  }
+  return classMap[taskType || 0] || 'icon-coral'
 }
 </script>
 
@@ -328,11 +361,21 @@ const navigateTo = (url: string) => {
   font-size: 40px;
 }
 
+.card-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, rgba($coral, 0.12) 0%, rgba($peach, 0.12) 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .card-icon-large {
-  width: 60px;
-  height: 60px;
-  background: rgba($bg-white, 0.3);
-  border-radius: 16px;
+  width: 64px;
+  height: 64px;
+  background: rgba($bg-white, 0.2);
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -403,14 +446,28 @@ const navigateTo = (url: string) => {
 }
 
 .task-icon {
-  width: 48px;
-  height: 48px;
-  background: $primary-gradient;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-sm;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  
+  &.icon-gold {
+    background: linear-gradient(135deg, $gold 0%, #FFCC70 100%);
+  }
+  
+  &.icon-coral {
+    background: linear-gradient(135deg, $coral 0%, $peach 100%);
+  }
+  
+  &.icon-mint {
+    background: linear-gradient(135deg, $mint 0%, #88D8B0 100%);
+  }
+  
+  &.icon-lavender {
+    background: linear-gradient(135deg, $lavender 0%, #E6B3E6 100%);
+  }
 }
 
 .task-info {

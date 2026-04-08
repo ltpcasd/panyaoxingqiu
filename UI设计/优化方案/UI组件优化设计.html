@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>潘瑶星球 - UI组件优化设计</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* 温暖珊瑚色系 */
+      --coral: #FF7B7B;
+      --coral-light: #FF9A9A;
+      --coral-dark: #E86565;
+      --peach: #FFB7B2;
+      --cream: #FFF0E5;
+      --rose: #FFD1D1;
+      --gold: #FFB347;
+      
+      /* 背景与文字 */
+      --bg-warm: #FFF8F5;
+      --bg-white: #FFFFFF;
+      --text-dark: #2D3436;
+      --text-mid: #636E72;
+      --text-light: #B2BEC3;
+      
+      /* 字号规范 - 更大更温暖 */
+      --text-xs: 13px;
+      --text-sm: 14px;
+      --text-base: 16px;
+      --text-lg: 18px;
+      --text-xl: 20px;
+      --text-2xl: 24px;
+      --text-3xl: 28px;
+      --text-4xl: 32px;
+      
+      /* 圆角 - 更圆润 */
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
+      --radius-xl: 22px;
+      --radius-2xl: 28px;
+      
+      /* 阴影 */
+      --shadow-soft: 0 4px 20px rgba(255, 123, 123, 0.12);
+      --shadow-card: 0 8px 32px rgba(255, 123, 123, 0.1);
+      --shadow-float: 0 12px 40px rgba(255, 123, 123, 0.18);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(160deg, #FFF5F0 0%, #FFE8E0 50%, #FFF0E5 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .page-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--coral);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    
+    .page-subtitle {
+      text-align: center;
+      font-size: var(--text-base);
+      color: var(--text-mid);
+      margin-bottom: 40px;
+    }
+    
+    .section {
+      max-width: 420px;
+      margin: 0 auto 40px;
+      background: var(--bg-white);
+      border-radius: var(--radius-2xl);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+    }
+    
+    .section-label {
+      font-size: var(--text-sm);
+      color: var(--coral);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 24px;
+    }
+    
+    /* ==================== 底部导航图标 ==================== */
+    .tabbar-preview {
+      background: var(--bg-warm);
+      border-radius: var(--radius-xl);
+      padding: 20px 16px 28px;
+    }
+    
+    .tabbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      padding: 14px 8px 20px;
+      box-shadow: var(--shadow-soft);
+    }
+    
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .tab-item:hover {
+      transform: translateY(-2px);
+    }
+    
+    .tab-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+    
+    .tab-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-light);
+      stroke-width: 1.8;
+      fill: none;
+      transition: all 0.25s ease;
+    }
+    
+    .tab-item.active .tab-icon svg {
+      stroke: var(--coral);
+      stroke-width: 2;
+    }
+    
+    .tab-item.active .tab-icon svg.filled {
+      fill: var(--coral);
+      stroke: var(--coral);
+    }
+    
+    .tab-text {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 500;
+      transition: color 0.25s ease;
+    }
+    
+    .tab-item.active .tab-text {
+      color: var(--coral);
+      font-weight: 600;
+    }
+    
+    /* ==================== 任务图标 ==================== */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg-warm);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .task-item:hover {
+      background: linear-gradient(135deg, rgba(255, 123, 123, 0.06) 0%, rgba(255, 183, 178, 0.06) 100%);
+    }
+    
+    .task-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .task-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke-width: 1.8;
+    }
+    
+    .task-icon.morning {
+      background: linear-gradient(135deg, #FFB347 0%, #FFCC70 100%);
+    }
+    
+    .task-icon.morning svg {
+      stroke: white;
+      fill: none;
+    }
+    
+    .task-icon.camera {
+      background: linear-gradient(135deg, var(--coral) 0%, var(--peach) 100%);
+    }
+    
+    .task-icon.camera svg {
+      stroke: white;
+      fill: none;
+    }
+    
+    .task-icon.quiz {
+      background: linear-gradient(135deg, #A8E6CF 0%, #88D8B0 100%);
+    }
+    
+    .task-icon.quiz svg {
+      stroke: white;
+      fill: none;
+    }
+    
+    .task-icon.letter {
+      background: linear-gradient(135deg, #DDA0DD 0%, #E6B3E6 100%);
+    }
+    
+    .task-icon.letter svg {
+      stroke: white;
+      fill: none;
+    }
+    
+    .task-content {
+      flex: 1;
+    }
+    
+    .task-name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+    
+    .task-reward {
+      font-size: var(--text-sm);
+      color: var(--text-mid);
+    }
+    
+    .task-status {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--peach);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+    
+    .task-status.done {
+      background: linear-gradient(135deg, var(--coral) 0%, var(--peach) 100%);
+      border-color: transparent;
+    }
+    
+    .task-status.done svg {
+      stroke: white;
+      stroke-width: 2.5;
+    }
+    
+    /* ==================== 背景图设置 ==================== */
+    .bg-settings {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .bg-current {
+      position: relative;
+      height: 140px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--cream) 0%, var(--rose) 100%);
+    }
+    
+    .bg-current img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+    
+    .bg-label {
+      color: white;
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+    
+    .bg-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    
+    .bg-preset {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+    
+    .bg-preset:hover {
+      transform: scale(1.05);
+    }
+    
+    .bg-preset.selected {
+      border-color: var(--coral);
+    }
+    
+    .bg-preset img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .bg-preset.color {
+      background: linear-gradient(135deg, var(--cream) 0%, var(--rose) 100%);
+    }
+    
+    .bg-preset.gradient1 { background: linear-gradient(135deg, #FFE5EC 0%, #FFF0E5 100%); }
+    .bg-preset.gradient2 { background: linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 100%); }
+    .bg-preset.gradient3 { background: linear-gradient(135deg, #FFF3E0 0%, #FCE4EC 100%); }
+    .bg-preset.gradient4 { background: linear-gradient(135deg, #F3E5F5 0%, #E8EAF6 100%); }
+    
+    .bg-preset.check {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 123, 123, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .bg-preset.selected .check {
+      opacity: 1;
+    }
+    
+    .bg-preset.check svg {
+      stroke: white;
+      stroke-width: 3;
+    }
+    
+    .bg-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      background: var(--bg-warm);
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--peach);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-mid);
+      font-size: var(--text-base);
+    }
+    
+    .bg-upload:hover {
+      background: rgba(255, 123, 123, 0.06);
+      border-color: var(--coral);
+      color: var(--coral);
+    }
+    
+    /* ==================== 信箱风格 ==================== */
+    .mailbox-styles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    
+    .mail-style {
+      background: var(--bg-warm);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.25s ease;
+    }
+    
+    .mail-style:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+    
+    .mail-style.selected {
+      border-color: var(--coral);
+      background: rgba(255, 123, 123, 0.06);
+    }
+    
+    .mail-preview {
+      height: 80px;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mail-preview.envelope1 {
+      background: linear-gradient(135deg, #FFE5EC 0%, #FFD1D1 100%);
+    }
+    
+    .mail-preview.envelope2 {
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    }
+    
+    .mail-preview.envelope3 {
+      background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+    }
+    
+    .mail-preview.envelope4 {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+    }
+    
+    .mail-preview.envelope5 {
+      background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+    }
+    
+    .mail-preview.envelope6 {
+      background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+    }
+    
+    .envelope-icon {
+      width: 40px;
+      height: 28px;
+      position: relative;
+    }
+    
+    .envelope-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 14px solid;
+    }
+    
+    .envelope1 .envelope-body { background: #FFC1CC; }
+    .envelope1 .envelope-flap { border-top-color: #FF9AA2; }
+    
+    .envelope2 .envelope-body { background: #A5D6A7; }
+    .envelope2 .envelope-flap { border-top-color: #81C784; }
+    
+    .envelope3 .envelope-body { background: #FFE082; }
+    .envelope3 .envelope-flap { border-top-color: #FFD54F; }
+    
+    .envelope4 .envelope-body { background: #90CAF9; }
+    .envelope4 .envelope-flap { border-top-color: #64B5F6; }
+    
+    .envelope5 .envelope-body { background: #CE93D8; }
+    .envelope5 .envelope-flap { border-top-color: #BA68C8; }
+    
+    .envelope6 .envelope-body { background: #EF9A9A; }
+    .envelope6 .envelope-flap { border-top-color: #E57373; }
+    
+    .mail-heart {
+      position: absolute;
+      bottom: -4px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .mail-heart svg {
+      stroke: white;
+      stroke-width: 2;
+      width: 10px;
+      height: 10px;
+    }
+    
+    .mail-name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-dark);
+      text-align: center;
+    }
+    
+    .mail-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 22px;
+      height: 22px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .mail-style.selected .mail-check {
+      opacity: 1;
+    }
+    
+    .mail-check svg {
+      stroke: white;
+      stroke-width: 2.5;
+    }
+    
+    /* ==================== 图标对比 ==================== */
+    .compare-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    
+    .compare-box {
+      background: var(--bg-warm);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    
+    .compare-label {
+      font-size: var(--text-xs);
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    
+    .compare-label.old {
+      color: #999;
+    }
+    
+    .compare-label.new {
+      color: var(--coral);
+    }
+    
+    .compare-icons {
+      display: flex;
+      justify-content: space-around;
+      gap: 8px;
+    }
+    
+    .compare-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .compare-icon span {
+      font-size: 20px;
+      opacity: 0.6;
+    }
+    
+    .compare-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--coral);
+      stroke-width: 1.8;
+    }
+    
+    /* ==================== 说明文字 ==================== */
+    .note {
+      background: linear-gradient(135deg, rgba(255, 123, 123, 0.08) 0%, rgba(255, 183, 178, 0.08) 100%);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 20px;
+    }
+    
+    .note p {
+      font-size: var(--text-sm);
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+    
+    .note strong {
+      color: var(--coral);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">Panyao Planet</h1>
+  <p class="page-subtitle">UI组件优化设计方案</p>
+  
+  <!-- 图标对比 -->
+  <section class="section">
+    <div class="section-label">Icon Comparison</div>
+    <h2 class="section-title">图标优化对比</h2>
+    
+    <div class="compare-section">
+      <div class="compare-box">
+        <div class="compare-label old">旧版 Emoji</div>
+        <div class="compare-icons">
+          <div class="compare-icon"><span>🏠</span></div>
+          <div class="compare-icon"><span>📅</span></div>
+          <div class="compare-icon"><span>📋</span></div>
+          <div class="compare-icon"><span>💌</span></div>
+          <div class="compare-icon"><span>👤</span></div>
+        </div>
+      </div>
+      
+      <div class="compare-box">
+        <div class="compare-label new">新版 SVG</div>
+        <div class="compare-icons">
+          <div class="compare-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9,22 9,12 15,12 15,22"/>
+            </svg>
+          </div>
+          <div class="compare-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12,6 12,12 16,14"/>
+            </svg>
+          </div>
+          <div class="compare-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <div class="compare-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <path d="M22 6l-10 7L2 6"/>
+            </svg>
+          </div>
+          <div class="compare-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 底部导航图标 -->
+  <section class="section">
+    <div class="section-label">Navigation Bar</div>
+    <h2 class="section-title">底部导航图标</h2>
+    
+    <div class="tabbar-preview">
+      <div class="tabbar">
+        <div class="tab-item active">
+          <div class="tab-icon">
+            <svg class="filled" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9,22 9,12 15,12 15,22"/>
+            </svg>
+          </div>
+          <span class="tab-text">首页</span>
+        </div>
+        
+        <div class="tab-item">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12,6 12,12 16,14"/>
+            </svg>
+          </div>
+          <span class="tab-text">时光轴</span>
+        </div>
+        
+        <div class="tab-item">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <span class="tab-text">任务</span>
+        </div>
+        
+        <div class="tab-item">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <path d="M22 6l-10 7L2 6"/>
+            </svg>
+          </div>
+          <span class="tab-text">信箱</span>
+        </div>
+        
+        <div class="tab-item">
+          <div class="tab-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <span class="tab-text">我的</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="note">
+      <p><strong>设计说明：</strong>采用线性图标风格，激活状态使用填充效果。图标圆角处理，线条流畅，视觉统一。</p>
+    </div>
+  </section>
+  
+  <!-- 任务图标 -->
+  <section class="section">
+    <div class="section-label">Task Icons</div>
+    <h2 class="section-title">任务图标优化</h2>
+    
+    <div class="task-list">
+      <div class="task-item">
+        <div class="task-icon morning">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="M4.93 4.93l1.41 1.41"/>
+            <path d="M17.66 17.66l1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="M6.34 17.66l-1.41 1.41"/>
+            <path d="M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">发送早安问候</div>
+          <div class="task-reward">+10 爱心值</div>
+        </div>
+        <div class="task-status done">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-icon camera">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">上传一张合照</div>
+          <div class="task-reward">+20 爱心值</div>
+        </div>
+        <div class="task-status"></div>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-icon quiz">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">完成默契答题</div>
+          <div class="task-reward">+30 爱心值</div>
+        </div>
+        <div class="task-status"></div>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-icon letter">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="task-content">
+          <div class="task-name">给TA写一封信</div>
+          <div class="task-reward">+50 爱心值</div>
+        </div>
+        <div class="task-status"></div>
+      </div>
+    </div>
+    
+    <div class="note">
+      <p><strong>设计说明：</strong>任务图标采用渐变背景 + 白色线条图标，区分不同类型任务。每种颜色代表不同主题：金色-日常、粉色-拍照、绿色-答题、紫色-写信。</p>
+    </div>
+  </section>
+  
+  <!-- 背景图设置 -->
+  <section class="section">
+    <div class="section-label">Background</div>
+    <h2 class="section-title">全局背景设置</h2>
+    
+    <div class="bg-settings">
+      <div class="bg-current">
+        <div class="bg-overlay">
+          <span class="bg-label">当前背景：默认渐变</span>
+        </div>
+      </div>
+      
+      <div class="bg-presets">
+        <div class="bg-preset gradient1 selected">
+          <div class="check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="bg-preset gradient2">
+          <div class="check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="bg-preset gradient3">
+          <div class="check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="bg-preset gradient4">
+          <div class="check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20,6 9,17 4,12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-upload">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17,8 12,3 7,8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span>上传自定义背景图</span>
+      </div>
+    </div>
+    
+    <div class="note">
+      <p><strong>功能说明：</strong>用户设置的背景图将应用于所有页面，创造统一的视觉氛围。支持预设渐变和自定义上传。</p>
+    </div>
+  </section>
+  
+  <!-- 信箱风格 -->
+  <section class="section">
+    <div class="section-label">Mailbox Style</div>
+    <h2 class="section-title">信箱风格选择</h2>
+    
+    <div class="mailbox-styles">
+      <div class="mail-style selected">
+        <div class="mail-preview envelope1">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">樱花粉</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="mail-style">
+        <div class="mail-preview envelope2">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">清新绿</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="mail-style">
+        <div class="mail-preview envelope3">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">暖阳黄</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="mail-style">
+        <div class="mail-preview envelope4">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">天空蓝</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="mail-style">
+        <div class="mail-preview envelope5">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">梦幻紫</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="mail-style">
+        <div class="mail-preview envelope6">
+          <div class="envelope-icon">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+          </div>
+          <div class="mail-heart">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="mail-name">玫瑰红</div>
+        <div class="mail-check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20,6 9,17 4,12"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <div class="note">
+      <p><strong>设计说明：</strong>提供6种信封风格，每种配有独特的配色方案。信封造型统一，色彩丰富但保持温暖调性。</p>
+    </div>
+  </section>
+</body>
+</html>

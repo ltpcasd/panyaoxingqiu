@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>潘瑶星球 - 绑定页设计预览（优化版）</title>
+  <style>
+    /* ==================== CSS 变量 ==================== */
+    :root {
+      /* 主色调 - 温暖珊瑚粉 */
+      --primary: #FF7B7B;
+      --primary-light: #FFA8A8;
+      --primary-dark: #E86565;
+      
+      /* 温暖辅助色 */
+      --warm-coral: #FF6B6B;
+      --warm-peach: #FFB7B2;
+      --warm-cream: #FFF0E5;
+      --warm-rose: #FFD1D1;
+      --warm-gold: #FFB347;
+      
+      /* 背景色 */
+      --bg-cream: #FFF8F5;
+      --bg-white: #FFFFFF;
+      
+      /* 文字色 */
+      --text-primary: #2D3436;
+      --text-secondary: #636E72;
+      --text-muted: #B2BEC3;
+      --text-white: #FFFFFF;
+      
+      /* 字号 - 优化后 */
+      --font-xs: 14px;
+      --font-sm: 14px;
+      --font-base: 16px;
+      --font-md: 17px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+      --font-3xl: 28px;
+      --font-4xl: 32px;
+      --font-5xl: 40px;
+      
+      /* 圆角 - 更圆润 */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-2xl: 24px;
+      
+      /* 阴影 - 温暖 */
+      --shadow-sm: 0 2px 8px rgba(255, 123, 123, 0.06);
+      --shadow-md: 0 4px 16px rgba(255, 123, 123, 0.1);
+      --shadow-lg: 0 8px 24px rgba(255, 123, 123, 0.15);
+      --shadow-warm: 0 4px 20px rgba(255, 123, 123, 0.3);
+    }
+    
+    /* ==================== 基础样式 ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', sans-serif;
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFF0E5 100%);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+    }
+    
+    /* ==================== 页面容器 ==================== */
+    .phone-frame {
+      width: 375px;
+      min-height: 812px;
+      background: linear-gradient(180deg, #FFF5F0 0%, #FFEBE5 50%, #FFE5DD 100%);
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 12px #1a1a1a;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* 状态栏 */
+    .status-bar {
+      height: 44px;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    /* 主内容 */
+    .content {
+      padding: 60px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* ==================== Logo 区域 ==================== */
+    .logo-section {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    
+    .logo-icon {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FF9A8B 50%, #FFB7B2 100%);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(255, 123, 123, 0.35);
+      position: relative;
+    }
+    
+    .logo-icon::before {
+      content: '💕';
+      font-size: 48px;
+    }
+    
+    /* 装饰星星 */
+    .logo-icon::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 20px;
+      animation: twinkle 2s infinite;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+    
+    .logo-title {
+      font-size: var(--font-3xl);
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FF6B6B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .logo-subtitle {
+      display: block;
+      font-size: var(--font-base);
+      color: var(--text-secondary);
+      margin-top: 8px;
+      font-weight: 400;
+    }
+    
+    /* ==================== ID 卡片 ==================== */
+    .id-card {
+      width: 100%;
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 28px 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: var(--shadow-md), 0 0 0 1px rgba(255, 123, 123, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* 装饰背景 */
+    .id-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FF7B7B 0%, #FFB7B2 50%, #FF7B7B 100%);
+    }
+    
+    .id-label {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    
+    .id-code {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FF6B6B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 10px;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+    
+    .id-hint {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+    
+    /* ==================== 绑定区域 ==================== */
+    .bind-section {
+      width: 100%;
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-md), 0 0 0 1px rgba(255, 123, 123, 0.08);
+    }
+    
+    .bind-title {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      display: block;
+      text-align: center;
+    }
+    
+    /* 装饰 */
+    .bind-title::before,
+    .bind-title::after {
+      content: '💫';
+      font-size: 16px;
+      margin: 0 8px;
+    }
+    
+    /* 输入框 */
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .bind-input {
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(180deg, #FFF8F5 0%, #FFF5F0 100%);
+      border: 2px solid rgba(255, 123, 123, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 0 24px;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 8px;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+    
+    .bind-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 2px;
+    }
+    
+    .bind-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(255, 123, 123, 0.1);
+      background: white;
+    }
+    
+    /* 按钮 */
+    .bind-btn {
+      width: 100%;
+      height: 56px;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FF9A8B 100%);
+      border-radius: var(--radius-lg);
+      color: white;
+      font-size: var(--font-md);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(255, 123, 123, 0.35);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bind-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .bind-btn:hover::before {
+      left: 100%;
+    }
+    
+    .bind-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255, 123, 123, 0.4);
+    }
+    
+    .bind-btn:active {
+      transform: scale(0.98);
+    }
+    
+    /* ==================== 提示文字 ==================== */
+    .tips {
+      margin-top: 32px;
+      text-align: center;
+    }
+    
+    .tips-text {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    
+    .tips-text strong {
+      color: var(--primary);
+    }
+    
+    /* ==================== 标题标签 ==================== */
+    .page-title {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+    }
+    
+    .optimize-badge {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background: linear-gradient(135deg, #FF7B7B 0%, #FFB7B2 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    /* ==================== 装饰元素 ==================== */
+    .decoration-heart {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.3;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .decoration-heart:nth-child(1) {
+      top: 15%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .decoration-heart:nth-child(2) {
+      top: 25%;
+      right: 12%;
+      animation-delay: 1s;
+    }
+    
+    .decoration-heart:nth-child(3) {
+      bottom: 30%;
+      left: 8%;
+      animation-delay: 2s;
+    }
+    
+    .decoration-heart:nth-child(4) {
+      bottom: 20%;
+      right: 10%;
+      animation-delay: 3s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(10deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <span class="page-title">📱 绑定页设计预览</span>
+    <span class="optimize-badge">✨ 优化版</span>
+    
+    <!-- 装饰元素 -->
+    <div class="decoration-heart">💕</div>
+    <div class="decoration-heart">💗</div>
+    <div class="decoration-heart">💖</div>
+    <div class="decoration-heart">💝</div>
+    
+    <!-- 状态栏 -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>📶 🔋</span>
+    </div>
+    
+    <!-- 主内容 -->
+    <div class="content">
+      <!-- Logo 区域 -->
+      <div class="logo-section">
+        <div class="logo-icon"></div>
+        <div class="logo-title">潘瑶星球</div>
+        <span class="logo-subtitle">专为情侣打造的私密空间</span>
+      </div>
+      
+      <!-- ID 卡片 -->
+      <div class="id-card">
+        <span class="id-label">我的专属ID码</span>
+        <div class="id-code">ABC123</div>
+        <span class="id-hint">分享给TA，开始你们的星球之旅</span>
+      </div>
+      
+      <!-- 绑定区域 -->
+      <div class="bind-section">
+        <span class="bind-title">绑定伴侣</span>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            class="bind-input" 
+            placeholder="输入TA的ID码"
+            maxlength="6"
+          />
+        </div>
+        <button class="bind-btn">
+          💕 开始绑定
+        </button>
+      </div>
+      
+      <!-- 提示 -->
+      <div class="tips">
+        <p class="tips-text">
+          让TA下载「潘瑶星球」并注册账号<br>
+          将TA的ID码填入上方输入框<br>
+          点击绑定后，你们将<strong>正式配对</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

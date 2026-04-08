@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Controller, Get } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtModule } from '@nestjs/jwt';
@@ -6,6 +6,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from '@app/database';
 import { RedisModule } from '@app/redis';
 import { CommonModule } from '@app/common';
+
+// 健康检查控制器
+@Controller()
+class HealthController {
+  @Get('health')
+  healthCheck() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'panyaoxingqiu-api',
+      version: '1.0.0'
+    };
+  }
+}
 
 // Feature Modules
 import { AuthModule } from './modules/auth/auth.module';
@@ -20,6 +34,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
+  controllers: [HealthController],
   imports: [
     // 配置模块
     ConfigModule.forRoot({
