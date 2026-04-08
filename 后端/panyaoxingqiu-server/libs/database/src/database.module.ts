@@ -12,31 +12,32 @@ const allEntities = Object.values(entities).filter(
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        const isProduction = configService.get('NODE_ENV') === 'production';
         const useSQLite = configService.get('USE_SQLITE', 'false') === 'true';
+        const dbHost = configService.get('DB_HOST', '');
         
-        if (useSQLite || isProduction) {
-          // 使用 SQLite（适合 Railway 免费计划）
+        // 仅当明确设置 USE_SQLITE=true 且没有 MySQL 连接信息时使用 SQLite
+        if (useSQLite && !dbHost) {
           return {
             type: 'sqlite',
             database: configService.get('SQLITE_DB_PATH', './data/panyaoxingqiu.sqlite'),
             entities: allEntities,
             synchronize: true,
-            logging: !isProduction,
+            logging: true,
           };
         }
         
-        // 使用 MySQL（本地开发）
+        // 默认使用 MySQL（本地开发 & Railway 生产环境）
+        const isProduction = configService.get('NODE_ENV') === 'production';
         return {
           type: 'mysql',
-          host: configService.get('DB_HOST', 'localhost'),
-          port: configService.get('DB_PORT', 3306),
+          host: dbHost || 'localhost',
+          port: parseInt(configService.get('DB_PORT', '3306'), 10),
           username: configService.get('DB_USERNAME', 'root'),
           password: configService.get('DB_PASSWORD', ''),
           database: configService.get('DB_DATABASE', 'panyaoxingqiu'),
           entities: allEntities,
           synchronize: true,
-          logging: configService.get('NODE_ENV') === 'development',
+          logging: !isProduction,
           charset: 'utf8mb4',
           timezone: '+08:00',
           extra: {
