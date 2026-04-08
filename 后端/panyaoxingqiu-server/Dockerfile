@@ -11,10 +11,10 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 
-# 安装依赖（使用npm install生成lock文件）
-RUN npm install --ignore-scripts
+# 安装依赖（允许 sqlite3 等原生模块编译）
+RUN npm install
 
-# 开发依赖也需要（NestJS构建需要）
+# 再次确保所有依赖安装完整
 RUN npm install
 
 # 复制源代码
@@ -34,8 +34,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
 
-# 创建上传目录
-RUN mkdir -p uploads
+# 创建上传目录和 SQLite 数据目录
+RUN mkdir -p uploads data
 
 # 创建非 root 用户
 RUN addgroup -g 1001 -S nodejs

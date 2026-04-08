@@ -13,31 +13,30 @@ const allEntities = Object.values(entities).filter(
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const useSQLite = configService.get('USE_SQLITE', 'false') === 'true';
-        const dbHost = configService.get('DB_HOST', '');
+        const isProduction = configService.get('NODE_ENV') === 'production';
         
-        // 仅当明确设置 USE_SQLITE=true 且没有 MySQL 连接信息时使用 SQLite
-        if (useSQLite && !dbHost) {
+        if (useSQLite || isProduction) {
+          // 使用 SQLite（Railway 免费计划，存储限制 500MB）
           return {
             type: 'sqlite',
             database: configService.get('SQLITE_DB_PATH', './data/panyaoxingqiu.sqlite'),
             entities: allEntities,
             synchronize: true,
-            logging: true,
+            logging: !isProduction,
           };
         }
         
-        // 默认使用 MySQL（本地开发 & Railway 生产环境）
-        const isProduction = configService.get('NODE_ENV') === 'production';
+        // 本地开发使用 MySQL
         return {
           type: 'mysql',
-          host: dbHost || 'localhost',
+          host: configService.get('DB_HOST', 'localhost'),
           port: parseInt(configService.get('DB_PORT', '3306'), 10),
           username: configService.get('DB_USERNAME', 'root'),
           password: configService.get('DB_PASSWORD', ''),
           database: configService.get('DB_DATABASE', 'panyaoxingqiu'),
           entities: allEntities,
           synchronize: true,
-          logging: !isProduction,
+          logging: true,
           charset: 'utf8mb4',
           timezone: '+08:00',
           extra: {
