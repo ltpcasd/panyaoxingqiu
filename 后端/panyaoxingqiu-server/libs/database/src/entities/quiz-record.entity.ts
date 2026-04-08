@@ -19,7 +19,7 @@ export class QuizRecord {
   @Column({ name: 'user_id_1', type: 'int' })
   userId1: string;
 
-  @Column({ name: 'user1_answer', type: 'varchar', length: 64, nullable: true, comment: '用户1的答�? })
+  @Column({ name: 'user1_answer', type: 'varchar', length: 64, nullable: true, comment: '用户1的答案' })
   user1Answer: string | null;
 
   @Column({ name: 'answer_1', type: 'varchar', length: 64, nullable: true })
@@ -28,7 +28,7 @@ export class QuizRecord {
   @Column({ name: 'user_id_2', type: 'int' })
   userId2: string;
 
-  @Column({ name: 'user2_answer', type: 'varchar', length: 64, nullable: true, comment: '用户2的答�? })
+  @Column({ name: 'user2_answer', type: 'varchar', length: 64, nullable: true, comment: '用户2的答案' })
   user2Answer: string | null;
 
   @Column({ name: 'answer_2', type: 'varchar', length: 64, nullable: true })

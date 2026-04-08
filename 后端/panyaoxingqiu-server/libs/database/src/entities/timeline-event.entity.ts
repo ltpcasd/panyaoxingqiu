@@ -17,7 +17,7 @@ export class TimelineEvent {
   @Column({ name: 'creator_id', type: 'int', comment: '创建者ID' })
   creatorId: string;
 
-  @Column({ name: 'event_type', type: 'tinyint', comment: '事件类型 1-纪念�?2-日常 3-旅行' })
+  @Column({ name: 'event_type', type: 'tinyint', comment: '事件类型 1-纪念日 2-日常 3-旅行' })
   eventType: number;
 
   @Column({ type: 'varchar', length: 128, comment: '标题' })
@@ -47,10 +47,10 @@ export class TimelineEvent {
   @Column({ name: 'is_important', type: 'tinyint', default: 0, comment: '是否重要' })
   isImportant: number;
 
-  @Column({ name: 'likes_count', type: 'int', default: 0, comment: '点赞�? })
+  @Column({ name: 'likes_count', type: 'int', default: 0, comment: '点赞数' })
   likesCount: number;
 
-  @Column({ name: 'comments_count', type: 'int', default: 0, comment: '评论�? })
+  @Column({ name: 'comments_count', type: 'int', default: 0, comment: '评论数' })
   commentsCount: number;
 
   @Column({ type: 'tinyint', default: 1 })

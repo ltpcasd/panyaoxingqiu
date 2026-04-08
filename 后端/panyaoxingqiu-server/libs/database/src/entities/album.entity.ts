@@ -23,7 +23,7 @@ export class Album {
   @Column({ type: 'varchar', length: 256, nullable: true, comment: '相册描述' })
   description: string | null;
 
-  @Column({ name: 'cover_image', type: 'varchar', length: 255, nullable: true, comment: '封面�? })
+  @Column({ name: 'cover_image', type: 'varchar', length: 255, nullable: true, comment: '封面图' })
   coverImage: string | null;
 
   @Column({ name: 'photo_count', type: 'int', default: 0, comment: '照片数量' })

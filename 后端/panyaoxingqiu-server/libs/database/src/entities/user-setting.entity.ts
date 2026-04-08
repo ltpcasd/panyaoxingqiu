@@ -17,13 +17,13 @@ export class UserSetting {
   @Column({ name: 'user_id', type: 'int', unique: true })
   userId: string;
 
-  @Column({ name: 'notification_enabled', type: 'tinyint', default: 1, comment: '消息通知开�? })
+  @Column({ name: 'notification_enabled', type: 'tinyint', default: 1, comment: '消息通知开关' })
   notificationEnabled: number;
 
-  @Column({ name: 'sound_enabled', type: 'tinyint', default: 1, comment: '声音开�? })
+  @Column({ name: 'sound_enabled', type: 'tinyint', default: 1, comment: '声音开关' })
   soundEnabled: number;
 
-  @Column({ name: 'vibration_enabled', type: 'tinyint', default: 1, comment: '震动开�? })
+  @Column({ name: 'vibration_enabled', type: 'tinyint', default: 1, comment: '震动开关' })
   vibrationEnabled: number;
 
   @Column({ name: 'privacy_level', type: 'tinyint', default: 1, comment: '隐私级别' })
