@@ -31,8 +31,10 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // 全局路由前缀
-  app.setGlobalPrefix(apiPrefix);
+  // 全局路由前缀（排除健康检查）
+  app.setGlobalPrefix(apiPrefix, {
+    exclude: ['health'],
+  });
 
   // 全局验证管道
   app.useGlobalPipes(

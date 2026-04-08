@@ -7,8 +7,8 @@ import { DatabaseModule } from '@app/database';
 import { RedisModule } from '@app/redis';
 import { CommonModule } from '@app/common';
 
-// 健康检查控制器
-@Controller('api')
+// 健康检查控制器（不加前缀，以及全局前缀 + health 访问）
+@Controller()
 class HealthController {
   @Get('health')
   healthCheck() {
