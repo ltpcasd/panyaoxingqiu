@@ -8,7 +8,7 @@ import { RedisModule } from '@app/redis';
 import { CommonModule } from '@app/common';
 
 // 健康检查控制器
-@Controller()
+@Controller('api')
 class HealthController {
   @Get('health')
   healthCheck() {
