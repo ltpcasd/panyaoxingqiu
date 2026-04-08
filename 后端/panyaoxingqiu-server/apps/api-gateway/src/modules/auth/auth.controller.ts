@@ -7,8 +7,8 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LoginDto, RefreshTokenDto } from './dto/auth.dto';
+import { AuthService, LoginResult } from './auth.service';
+import { DeviceLoginDto, LoginDto, RefreshTokenDto } from './dto/auth.dto';
 import { JwtAuthGuard } from '@app/common';
 import { CurrentUser } from '@app/common';
 
@@ -16,6 +16,18 @@ import { CurrentUser } from '@app/common';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('device-login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '设备指纹登录（H5 无感登录）' })
+  @ApiResponse({ status: 200, description: '登录成功' })
+  async deviceLogin(@Body() dto: DeviceLoginDto) {
+    return this.authService.deviceLogin(
+      dto.deviceId,
+      dto.nickname,
+      dto.avatarUrl,
+    );
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)

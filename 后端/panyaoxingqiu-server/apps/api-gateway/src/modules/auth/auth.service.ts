@@ -19,7 +19,7 @@ interface WxSession {
   errmsg?: string;
 }
 
-interface LoginResult {
+export interface LoginResult {
   token: string;
   expiresIn: number;
   userInfo: Record<string, any>;
@@ -34,6 +34,70 @@ export class AuthService {
     private redisService: RedisService,
     private dataSource: DataSource,
   ) {}
+
+  /**
+   * 设备指纹登录（H5 无感登录）
+   */
+  async deviceLogin(
+    deviceId: string,
+    nickname?: string,
+    avatarUrl?: string,
+  ): Promise<LoginResult> {
+    // 1. 查询或创建用户（用 deviceId 作为 openid 的替代）
+    const userRepo = this.dataSource.getRepository(User);
+    let user = await userRepo.findOne({ where: { openid: deviceId } });
+
+    if (!user) {
+      // 首次登录，创建用户
+      const newUser = userRepo.create({
+        openid: deviceId,
+        unionid: null,
+        nickname: nickname || `用户_${deviceId.substring(0, 8)}`,
+        avatarUrl: avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWbO6DwQiaviaF9TqPFshTZ5HicGyVe6T8bDcxIw3PCbJQXTw9Vlz4icXcQmHImtNZSrWQtvW2QAca5wN9T8ibA/0',
+        gender: 1,
+        country: '中国',
+        province: '北京',
+        city: '北京',
+        language: 'zh_CN',
+        status: 1,
+      });
+      user = await userRepo.save(newUser);
+
+      // 创建用户设置
+      const settingRepo = this.dataSource.getRepository(UserSetting);
+      const setting = settingRepo.create({ userId: user.id });
+      await settingRepo.save(setting);
+    } else if (nickname) {
+      // 更新用户信息
+      await userRepo.update(user.id, {
+        nickname: nickname || user.nickname,
+        avatarUrl: avatarUrl || user.avatarUrl,
+      });
+      user = await userRepo.findOne({ where: { id: user.id } });
+    }
+
+    if (user.status === 0) {
+      throw new UnauthorizedException('账号已被禁用');
+    }
+
+    // 2. 生成JWT Token
+    const payload = { userId: user.id, openid: user.openid };
+    const token = await this.jwtService.signAsync(payload);
+    const expiresIn = 7 * 24 * 3600;
+
+    // 3. 缓存登录态
+    await this.redisService.setUserSession(user.openid, user.id, token, expiresIn);
+
+    // 4. 查询配对信息
+    const coupleInfo = await this.getCoupleInfo(user.id);
+
+    return {
+      token,
+      expiresIn,
+      userInfo: this.sanitizeUserInfo(user),
+      coupleInfo,
+    };
+  }
 
   /**
    * 微信小程序登录

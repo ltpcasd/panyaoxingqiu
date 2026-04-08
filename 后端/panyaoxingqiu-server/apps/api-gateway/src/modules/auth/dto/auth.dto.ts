@@ -1,3 +1,20 @@
+export class DeviceLoginDto {
+  /**
+   * 设备唯一标识（H5 端生成的 UUID）
+   */
+  deviceId: string;
+
+  /**
+   * 用户昵称（可选，首次登录时提供）
+   */
+  nickname?: string;
+
+  /**
+   * 用户头像（可选）
+   */
+  avatarUrl?: string;
+}
+
 export class LoginDto {
   /**
    * 微信登录 code
