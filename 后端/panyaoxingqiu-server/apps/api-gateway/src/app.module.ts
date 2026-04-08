@@ -7,10 +7,11 @@ import { DatabaseModule } from '@app/database';
 import { RedisModule } from '@app/redis';
 import { CommonModule } from '@app/common';
 
-// 健康检查控制器（不加前缀，以及全局前缀 + health 访问）
+// 健康检查控制器（支持 /health 和 /api/health 访问）
 @Controller()
 class HealthController {
   @Get('health')
+  @Get('api/health')
   healthCheck() {
     return {
       status: 'ok',
