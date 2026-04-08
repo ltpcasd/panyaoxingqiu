@@ -38,7 +38,10 @@ export class TimelineEvent {
   @Column({ type: 'varchar', length: 32, nullable: true, comment: '心情' })
   mood: string | null;
 
-  @Column({ type: 'json', nullable: true, comment: '图片数组' })
+  @Column({ type: 'text', nullable: true, comment: '图片数组（JSON字符串）', transformer: {
+    to: (value: string[] | null) => value ? JSON.stringify(value) : null,
+    from: (value: string | null) => value ? JSON.parse(value) : null,
+  }})
   images: string[] | null;
 
   @Column({ name: 'is_important', type: 'tinyint', default: 0, comment: '是否重要' })

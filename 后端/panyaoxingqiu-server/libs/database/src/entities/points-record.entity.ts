@@ -18,7 +18,7 @@ export class PointsRecord {
   @Column({ type: 'int' })
   points: number;
 
-  @Column({ type: 'enum', enum: ['task', 'quiz', 'checkin', 'other'] })
+  @Column({ type: 'varchar', length: 32, comment: '类型: task, quiz, checkin, other' })
   type: PointsRecordType;
 
   @Column({ name: 'source_id', nullable: true })

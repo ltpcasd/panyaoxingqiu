@@ -16,7 +16,10 @@ export class QuizQuestion {
   @Column({ type: 'varchar', length: 256 })
   question: string;
 
-  @Column({ type: 'json', comment: '选项' })
+  @Column({ type: 'text', comment: '选项（JSON字符串）', transformer: {
+    to: (value: any[]) => JSON.stringify(value),
+    from: (value: string) => JSON.parse(value),
+  }})
   options: { label: string; value: string; text: string }[];
 
   @Column({ name: 'correct_answer', type: 'varchar', length: 64, comment: '正确答案' })
@@ -25,7 +28,10 @@ export class QuizQuestion {
   @Column({ type: 'tinyint', default: 1, comment: '难度' })
   difficulty: number;
 
-  @Column({ type: 'json', nullable: true, comment: '标签' })
+  @Column({ type: 'text', nullable: true, comment: '标签（JSON字符串）', transformer: {
+    to: (value: string[] | null) => value ? JSON.stringify(value) : null,
+    from: (value: string | null) => value ? JSON.parse(value) : null,
+  }})
   tags: string[] | null;
 
   @Column({ type: 'tinyint', default: 1 })
