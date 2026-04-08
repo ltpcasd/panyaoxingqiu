@@ -11,19 +11,19 @@ import { User } from './user.entity';
 
 @Entity('user_settings')
 export class UserSetting {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'user_id', type: 'bigint', unsigned: true, unique: true })
+  @Column({ name: 'user_id', type: 'int', unique: true })
   userId: string;
 
-  @Column({ name: 'notification_enabled', type: 'tinyint', default: 1, comment: '消息通知开关' })
+  @Column({ name: 'notification_enabled', type: 'tinyint', default: 1, comment: '消息通知开�? })
   notificationEnabled: number;
 
-  @Column({ name: 'sound_enabled', type: 'tinyint', default: 1, comment: '声音开关' })
+  @Column({ name: 'sound_enabled', type: 'tinyint', default: 1, comment: '声音开�? })
   soundEnabled: number;
 
-  @Column({ name: 'vibration_enabled', type: 'tinyint', default: 1, comment: '震动开关' })
+  @Column({ name: 'vibration_enabled', type: 'tinyint', default: 1, comment: '震动开�? })
   vibrationEnabled: number;
 
   @Column({ name: 'privacy_level', type: 'tinyint', default: 1, comment: '隐私级别' })

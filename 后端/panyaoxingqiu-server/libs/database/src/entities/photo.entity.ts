@@ -7,16 +7,16 @@ import {
 
 @Entity('photos')
 export class Photo {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'album_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'album_id', type: 'int' })
   albumId: string;
 
-  @Column({ name: 'couple_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'couple_id', type: 'int' })
   coupleId: string;
 
-  @Column({ name: 'uploader_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'uploader_id', type: 'int' })
   uploaderId: string;
 
   @Column({ type: 'varchar', length: 255, comment: '图片URL' })

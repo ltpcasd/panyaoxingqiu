@@ -7,28 +7,28 @@ import {
 
 @Entity('quiz_records')
 export class QuizRecord {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'couple_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'couple_id', type: 'int' })
   coupleId: string;
 
-  @Column({ name: 'question_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'question_id', type: 'int' })
   questionId: string;
 
-  @Column({ name: 'user_id_1', type: 'bigint', unsigned: true })
+  @Column({ name: 'user_id_1', type: 'int' })
   userId1: string;
 
-  @Column({ name: 'user1_answer', type: 'varchar', length: 64, nullable: true, comment: '用户1的答案' })
+  @Column({ name: 'user1_answer', type: 'varchar', length: 64, nullable: true, comment: '用户1的答�? })
   user1Answer: string | null;
 
   @Column({ name: 'answer_1', type: 'varchar', length: 64, nullable: true })
   answer1: string | null;
 
-  @Column({ name: 'user_id_2', type: 'bigint', unsigned: true })
+  @Column({ name: 'user_id_2', type: 'int' })
   userId2: string;
 
-  @Column({ name: 'user2_answer', type: 'varchar', length: 64, nullable: true, comment: '用户2的答案' })
+  @Column({ name: 'user2_answer', type: 'varchar', length: 64, nullable: true, comment: '用户2的答�? })
   user2Answer: string | null;
 
   @Column({ name: 'answer_2', type: 'varchar', length: 64, nullable: true })

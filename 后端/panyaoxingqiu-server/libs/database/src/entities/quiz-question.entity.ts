@@ -7,7 +7,7 @@ import {
 
 @Entity('quiz_questions')
 export class QuizQuestion {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @Column({ type: 'varchar', length: 32, comment: '分类' })

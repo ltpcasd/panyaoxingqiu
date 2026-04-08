@@ -7,16 +7,16 @@ import {
 
 @Entity('letters')
 export class Letter {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'couple_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'couple_id', type: 'int' })
   coupleId: string;
 
-  @Column({ name: 'sender_id', type: 'bigint', unsigned: true, comment: '发送者ID' })
+  @Column({ name: 'sender_id', type: 'int', comment: '发送者ID' })
   senderId: string;
 
-  @Column({ name: 'receiver_id', type: 'bigint', unsigned: true, comment: '接收者ID' })
+  @Column({ name: 'receiver_id', type: 'int', comment: '接收者ID' })
   receiverId: string;
 
   @Column({ type: 'varchar', length: 128, nullable: true })

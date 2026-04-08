@@ -7,10 +7,10 @@ import {
 
 @Entity('notifications')
 export class Notification {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'user_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'user_id', type: 'int' })
   userId: string;
 
   @Column({ type: 'varchar', length: 128, comment: '通知标题' })
@@ -19,13 +19,13 @@ export class Notification {
   @Column({ type: 'text', comment: '通知内容' })
   content: string;
 
-  @Column({ name: 'notify_type', type: 'tinyint', comment: '通知类型 1-系统 2-配对 3-互动 4-任务 5-纪念日' })
+  @Column({ name: 'notify_type', type: 'tinyint', comment: '通知类型 1-系统 2-配对 3-互动 4-任务 5-纪念�? })
   notifyType: number;
 
   @Column({ name: 'extra_data', type: 'text', nullable: true, comment: '额外数据(JSON)' })
   extraData: string | null;
 
-  @Column({ type: 'tinyint', default: 1, comment: '状态 0-禁用 1-启用' })
+  @Column({ type: 'tinyint', default: 1, comment: '状�?0-禁用 1-启用' })
   status: number;
 
   @Column({ name: 'is_read', type: 'tinyint', default: 0 })

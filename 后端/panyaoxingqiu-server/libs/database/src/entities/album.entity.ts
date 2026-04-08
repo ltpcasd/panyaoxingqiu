@@ -8,13 +8,13 @@ import {
 
 @Entity('albums')
 export class Album {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ name: 'couple_id', type: 'bigint', unsigned: true })
+  @Column({ name: 'couple_id', type: 'int' })
   coupleId: string;
 
-  @Column({ name: 'creator_id', type: 'bigint', unsigned: true, comment: '创建者ID' })
+  @Column({ name: 'creator_id', type: 'int', comment: '创建者ID' })
   creatorId: string;
 
   @Column({ type: 'varchar', length: 64, comment: '相册名称' })
@@ -23,7 +23,7 @@ export class Album {
   @Column({ type: 'varchar', length: 256, nullable: true, comment: '相册描述' })
   description: string | null;
 
-  @Column({ name: 'cover_image', type: 'varchar', length: 255, nullable: true, comment: '封面图' })
+  @Column({ name: 'cover_image', type: 'varchar', length: 255, nullable: true, comment: '封面�? })
   coverImage: string | null;
 
   @Column({ name: 'photo_count', type: 'int', default: 0, comment: '照片数量' })
