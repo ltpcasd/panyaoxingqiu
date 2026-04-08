@@ -12,7 +12,7 @@ export class PointsRecord {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id' })
+  @Column({ name: 'user_id', type: 'varchar', length: 64 })
   userId: string;
 
   @Column({ type: 'int' })
@@ -21,11 +21,11 @@ export class PointsRecord {
   @Column({ type: 'varchar', length: 32, comment: '类型: task, quiz, checkin, other' })
   type: PointsRecordType;
 
-  @Column({ name: 'source_id', nullable: true })
-  sourceId: string;
+  @Column({ name: 'source_id', type: 'varchar', length: 64, nullable: true })
+  sourceId: string | null;
 
-  @Column({ nullable: true })
-  description: string;
+  @Column({ type: 'varchar', length: 256, nullable: true })
+  description: string | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
